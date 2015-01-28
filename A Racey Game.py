@@ -3,6 +3,7 @@ __author__ = 'Ben'
 
 import pygame
 import time
+import random
 
 pygame.init()
 
@@ -14,6 +15,8 @@ display_height = 600
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
 
 car_width = 73
 
@@ -27,6 +30,9 @@ pygame.display.set_caption('A bit Racey')
 clock = pygame.time.Clock()
 
 carImg = pygame.image.load('racecar.png')
+
+def things(thingx, thingy, thingw, thingh, color):
+    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 
 # Helper function to blit the car image
 def car(x,y):
@@ -56,6 +62,12 @@ def game_loop():
 
     x_change = 0
 
+    thing_startx = random.randrange(0, display_width)
+    thing_starty = -600
+    thing_speed = 7
+    thing_width = 100
+    thing_height = 100
+
     gameExit = False
 
     while not gameExit:
@@ -80,11 +92,20 @@ def game_loop():
                         x_change = 0
 
         x += x_change
+
         gameDisplay.fill(white)
+        things(thing_startx, thing_starty, thing_width, thing_height, blue)
+        thing_starty += thing_speed
         car(x,y)
         # Check to see if car collides with the edge of the screen
         if x > display_width - car_width or x < 0:
             crash()
+
+        # Check to see if the block has passed us
+        if thing_starty > display_height:
+            thing_starty = 0 - thing_height
+            thing_startx = random.randrange(0, display_width)
+
         pygame.display.update()
         clock.tick(60)
 
