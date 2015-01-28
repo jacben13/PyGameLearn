@@ -2,6 +2,7 @@ __author__ = 'Ben'
 # First lesson on PyGame from Sentdex https://www.youtube.com/watch?v=ujOTNg17LjI
 
 import pygame
+import time
 
 pygame.init()
 
@@ -31,6 +32,24 @@ carImg = pygame.image.load('racecar.png')
 def car(x,y):
     gameDisplay.blit(carImg,(x,y))
 
+def crash():
+    message_display('You Crashed!')
+
+def message_display(text):
+    largeText = pygame.font.Font('freesansbold.ttf', 115)
+    textSurf, textRect = text_objects(text, largeText)
+    textRect.center = ((display_width / 2), (display_height / 2))
+    gameDisplay.blit(textSurf, textRect)
+
+    pygame.display.update()
+    time.sleep(2)
+
+    game_loop()
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, black)
+    return textSurface, textSurface.get_rect()
+
 def game_loop():
     x = (display_width * 0.45)
     y = (display_height * 0.8)
@@ -43,7 +62,8 @@ def game_loop():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                gameExit = True
+                pygame.quit()
+                quit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -62,9 +82,9 @@ def game_loop():
         x += x_change
         gameDisplay.fill(white)
         car(x,y)
-        # Check to see if car is outside the screen
+        # Check to see if car collides with the edge of the screen
         if x > display_width - car_width or x < 0:
-            gameExit = True
+            crash()
         pygame.display.update()
         clock.tick(60)
 
